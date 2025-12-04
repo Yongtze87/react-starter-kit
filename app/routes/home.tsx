@@ -6,10 +6,10 @@ import Team from "~/components/homepage/team";
 import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
-  const title = "React Starter Kit - Launch Your SAAS Quickly";
+  const title = "AI Accounting Assistant - 24/7 Financial Intelligence";
   const description =
-    "This powerful starter kit is designed to help you launch your SAAS application quickly and efficiently.";
-  const keywords = "React, Starter Kit, SAAS, Launch, Quickly, Efficiently";
+    "Transform your accounting workflow with AI-powered financial analysis, document processing, and automated reporting. Get instant answers to financial queries anytime.";
+  const keywords = "AI Accounting, Financial Assistant, Document Processing, Automated Reports, Financial Analysis";
   const siteUrl = "https://www.reactstarter.xyz/";
   const imageUrl =
     "https://jdj14ctwppwprnqu.public.blob.vercel-storage.com/rsk-image-FcUcfBMBgsjNLo99j3NhKV64GT2bQl.png";
@@ -29,7 +29,7 @@ export function meta({}: Route.MetaArgs) {
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:url", content: siteUrl },
-    { property: "og:site_name", content: "React Starter Kit" },
+    { property: "og:site_name", content: "AI Accounting Assistant" },
     { property: "og:image", content: imageUrl },
 
     // Twitter Card
