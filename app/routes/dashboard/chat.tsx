@@ -169,7 +169,7 @@ export default function Chat() {
             <Button
               type="submit"
               size="icon"
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || !input?.trim()}
               className="h-[44px] w-[44px] flex-shrink-0"
             >
               <Send className="h-5 w-5" />
