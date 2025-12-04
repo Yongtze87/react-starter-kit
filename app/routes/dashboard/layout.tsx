@@ -1,34 +1,22 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
-import { fetchQuery } from "convex/nextjs";
-import { redirect, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { AppSidebar } from "~/components/dashboard/app-sidebar";
 import { SiteHeader } from "~/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
-import { api } from "../../../convex/_generated/api";
 import type { Route } from "./+types/layout";
-import { createClerkClient } from "@clerk/react-router/api.server";
 import { Outlet } from "react-router";
 
 export async function loader(args: Route.LoaderArgs) {
-  const { userId } = await getAuth(args);
+  // TODO: Add Supabase auth check and redirect to /sign-in if not authenticated
+  // TODO: Check subscription status and redirect to /subscription-required if needed
 
-  // Redirect to sign-in if not authenticated
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-
-  // Parallel data fetching to reduce waterfall
-  const [subscriptionStatus, user] = await Promise.all([
-    fetchQuery(api.subscriptions.checkUserSubscriptionStatus, { userId }),
-    createClerkClient({
-      secretKey: process.env.CLERK_SECRET_KEY,
-    }).users.getUser(userId)
-  ]);
-
-  // Redirect to subscription-required if no active subscription
-  if (!subscriptionStatus?.hasActiveSubscription) {
-    throw redirect("/subscription-required");
-  }
+  // Placeholder user data for development
+  const user = {
+    id: "demo-user-id",
+    fullName: "Demo User",
+    email: "demo@example.com",
+    initials: "DU",
+    imageUrl: null,
+  };
 
   return { user };
 }

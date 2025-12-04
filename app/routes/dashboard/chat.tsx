@@ -6,16 +6,11 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 
-const CONVEX_SITE_URL = import.meta.env.VITE_CONVEX_URL!.replace(
-  /.cloud$/,
-  ".site"
-);
-
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       maxSteps: 10,
-      api: `${CONVEX_SITE_URL}/api/chat`,
+      api: '/api/chat',
     });
 
   return (
