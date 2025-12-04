@@ -1,9 +1,8 @@
-import { useLoaderData } from "react-router";
-import { AppSidebar } from "~/components/dashboard/app-sidebar";
-import { SiteHeader } from "~/components/dashboard/site-header";
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { useLoaderData, useLocation } from "react-router";
 import type { Route } from "./+types/layout";
 import { Outlet } from "react-router";
+import { BottomNav } from "~/components/mobile/bottom-nav";
+import { MobileHeader } from "~/components/mobile/mobile-header";
 
 export async function loader(args: Route.LoaderArgs) {
   // TODO: Add Supabase auth check and redirect to /sign-in if not authenticated
@@ -21,25 +20,30 @@ export async function loader(args: Route.LoaderArgs) {
   return { user };
 }
 
+const pageTitles: Record<string, string> = {
+  "/": "Dashboard",
+  "/chat": "AI Assistant",
+  "/documents": "Documents",
+  "/settings": "Settings",
+};
+
 export default function DashboardLayout() {
   const { user } = useLoaderData();
+  const location = useLocation();
+  const title = pageTitles[location.pathname] || "Dashboard";
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "280px",
-          "--header-height": "56px",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" user={user} />
-      <SidebarInset className="min-h-screen">
-        <SiteHeader />
-        <div className="flex-1 w-full px-4 py-4 max-w-screen-sm mx-auto">
+    <div className="flex flex-col min-h-screen bg-background">
+      <MobileHeader title={title} user={user} />
+
+      {/* Main content area with padding for header and bottom nav */}
+      <main className="flex-1 pb-16 overflow-y-auto">
+        <div className="w-full max-w-screen-sm mx-auto px-4 py-4">
           <Outlet />
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </main>
+
+      <BottomNav />
+    </div>
   );
 }

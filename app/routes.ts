@@ -14,6 +14,7 @@ export default [
   layout("routes/dashboard/layout.tsx", [
     index("routes/dashboard/index.tsx"),
     route("chat", "routes/dashboard/chat.tsx"),
+    route("documents", "routes/dashboard/documents.tsx"),
     route("settings", "routes/dashboard/settings.tsx"),
   ]),
 ] satisfies RouteConfig;
