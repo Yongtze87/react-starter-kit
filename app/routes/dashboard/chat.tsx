@@ -27,7 +27,7 @@ const quickPrompts = [
 ];
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setInput, error } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, append, error } =
     useChat({
       maxSteps: 10,
       api: '/api/chat',
@@ -35,6 +35,8 @@ export default function Chat() {
         console.error('Chat error:', error);
       },
     });
+
+  console.log('Chat render - messages count:', messages.length, 'input:', input, 'isLoading:', isLoading);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -53,14 +55,26 @@ export default function Chat() {
   }, [input]);
 
   const handleQuickPrompt = async (prompt: string) => {
-    setInput(prompt);
-    // Wait for state update, then submit
-    setTimeout(() => {
-      const form = textareaRef.current?.form;
-      if (form) {
-        form.requestSubmit();
-      }
-    }, 0);
+    console.log('Quick prompt clicked:', prompt);
+    try {
+      await append({
+        role: 'user',
+        content: prompt,
+      });
+    } catch (err) {
+      console.error('Error sending quick prompt:', err);
+    }
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    console.log('Form submit called, input:', input);
+    e.preventDefault();
+    if (!input?.trim()) {
+      console.log('Input is empty, not submitting');
+      return;
+    }
+    console.log('Calling handleSubmit');
+    handleSubmit(e);
   };
 
   return (
@@ -159,7 +173,7 @@ export default function Chat() {
       {/* Input Area - Fixed at bottom */}
       <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-screen-sm mx-auto px-4 py-3">
-          <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+          <form onSubmit={onSubmit} className="flex gap-2 items-end">
             <Textarea
               ref={textareaRef}
               value={input}
@@ -169,9 +183,11 @@ export default function Chat() {
               rows={1}
               className="min-h-[44px] max-h-32 resize-none text-base py-3"
               onKeyDown={(e) => {
+                console.log('Key pressed:', e.key);
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  handleSubmit(e);
+                  console.log('Enter pressed, calling onSubmit');
+                  onSubmit(e);
                 }
               }}
             />
@@ -180,6 +196,7 @@ export default function Chat() {
               size="icon"
               disabled={isLoading || !input?.trim()}
               className="h-[44px] w-[44px] flex-shrink-0"
+              onClick={() => console.log('Send button clicked')}
             >
               <Send className="h-5 w-5" />
             </Button>
