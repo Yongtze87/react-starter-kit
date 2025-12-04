@@ -6,6 +6,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
+  route("api/chat", "routes/api.chat.tsx"),
   route("sign-in/*", "routes/sign-in.tsx"),
   route("sign-up/*", "routes/sign-up.tsx"),
   route("pricing", "routes/pricing.tsx"),
