@@ -1,4 +1,3 @@
-import { SignOutButton } from "@clerk/react-router";
 import {
   IconDotsVertical,
   IconLogout,
@@ -21,17 +20,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { useClerk } from "@clerk/react-router";
 
 export function NavUser({ user }: any) {
   const { isMobile } = useSidebar();
-  const userFullName = user.firstName + " " + user.lastName;
-  const userEmail = user.emailAddresses[0].emailAddress;
-  const userInitials =
-    (user?.firstName?.charAt(0) || "").toUpperCase() +
-    (user?.lastName?.charAt(0) || "").toUpperCase();
-  const userProfile = user.imageUrl;
-  const { signOut } = useClerk();
+
+  // Placeholder user data
+  const userFullName = user?.fullName || "Demo User";
+  const userEmail = user?.email || "demo@example.com";
+  const userInitials = user?.initials || "DU";
+  const userProfile = user?.imageUrl;
+
+  const handleSignOut = () => {
+    // TODO: Implement Supabase sign out
+    console.log("Sign out clicked");
+  };
 
   return (
     <SidebarMenu>
@@ -49,16 +51,14 @@ export function NavUser({ user }: any) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{userFullName}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {userEmail}
-                </span>
+                <span className="truncate font-semibold">{userFullName}</span>
+                <span className="truncate text-xs">{userEmail}</span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -72,10 +72,8 @@ export function NavUser({ user }: any) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{userFullName}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {userEmail}
-                  </span>
+                  <span className="truncate font-semibold">{userFullName}</span>
+                  <span className="truncate text-xs">{userEmail}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -91,9 +89,9 @@ export function NavUser({ user }: any) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut({ redirectUrl: "/" })}>
+            <DropdownMenuItem onClick={handleSignOut}>
               <IconLogout />
-              Sign Out
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

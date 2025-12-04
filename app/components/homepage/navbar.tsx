@@ -1,5 +1,4 @@
 "use client";
-import { UserButton } from "@clerk/react-router";
 import { Github, Menu, X } from "lucide-react";
 import React, { useCallback } from "react";
 import { Link } from "react-router";
@@ -124,14 +123,11 @@ export const Navbar = ({
                   <Github className="w-5 h-5" />
                 </Link>
                 {loaderData?.isSignedIn ? (
-                  <div className="flex items-center gap-3">
-                    <Button asChild size="sm">
-                      <Link to={dashboardLink} prefetch="viewport">
-                        <span>{dashboardText}</span>
-                      </Link>
-                    </Button>
-                    <UserButton />
-                  </div>
+                  <Button asChild size="sm">
+                    <Link to={dashboardLink} prefetch="viewport">
+                      <span>{dashboardText}</span>
+                    </Link>
+                  </Button>
                 ) : (
                   <>
                     <Button
