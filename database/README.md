@@ -63,7 +63,38 @@ This guide will help you set up the Supabase database for the AI Accounting Assi
 5. Configure your phone provider (Twilio, MessageBird, etc.) if using OTP
    - For this app, we're using phone as username (no OTP), so you can skip this step
 
-### 6. Test Database Connection
+### 6. Set Up Storage Buckets
+
+For document uploads, you need to create a storage bucket:
+
+1. Go to **Storage** in the left sidebar
+2. Click **New bucket**
+3. Bucket name: `documents`
+4. Make it **Public** (for easy file access)
+5. Click **Create bucket**
+
+**Set Storage Policies:**
+1. Click on the `documents` bucket
+2. Go to **Policies** tab
+3. Add the following policies:
+
+**Upload Policy** (allows authenticated users to upload):
+```sql
+CREATE POLICY "Users can upload documents"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'documents');
+```
+
+**Read Policy** (allows authenticated users to read):
+```sql
+CREATE POLICY "Users can read documents"
+ON storage.objects FOR SELECT
+TO authenticated
+USING (bucket_id = 'documents');
+```
+
+### 7. Test Database Connection
 
 Create a `.env` file in your project root:
 

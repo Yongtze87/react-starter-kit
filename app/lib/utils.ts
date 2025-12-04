@@ -18,3 +18,16 @@ export {
   clearChatSession,
   type ReportRequest,
 } from './utils/download-helper';
+
+// Export document upload utilities
+export {
+  uploadDocument,
+  getDocuments,
+  updateDocumentStatus,
+  downloadJournalEntries,
+  formatDocumentStatus,
+  validateFileBeforeUpload,
+  type UploadDocumentResponse,
+  type DocumentListResponse,
+  type UpdateStatusResponse,
+} from './utils/document-helper';
