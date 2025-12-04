@@ -7,12 +7,24 @@ const google = createGoogleGenerativeAI({
 });
 
 export async function action({ request }: Route.ActionArgs) {
-  const { messages } = await request.json();
+  try {
+    console.log('Chat API called');
 
-  const result = streamText({
-    model: google("gemini-2.0-flash-exp"),
-    messages,
-    system: `You are an AI Accounting Assistant. You help users with:
+    const { messages } = await request.json();
+    console.log('Received messages:', messages?.length);
+
+    if (!process.env.GOOGLE_AI_API_KEY) {
+      console.error('GOOGLE_AI_API_KEY is not set');
+      return new Response(
+        JSON.stringify({ error: 'API key not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const result = streamText({
+      model: google("gemini-2.0-flash-exp"),
+      messages,
+      system: `You are an AI Accounting Assistant. You help users with:
 - Financial analysis and insights
 - Generating reports (P&L, expense summaries)
 - Answering questions about revenue, expenses, and profit
@@ -29,7 +41,15 @@ Current capabilities:
 - Can generate Excel and PDF reports
 - Process receipts and invoices with OCR
 - Analyze trends across fiscal years and quarters`,
-  });
+    });
 
-  return result.toDataStreamResponse();
+    console.log('Streaming response');
+    return result.toDataStreamResponse();
+  } catch (error) {
+    console.error('Chat API error:', error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 }

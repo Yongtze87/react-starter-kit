@@ -27,10 +27,13 @@ const quickPrompts = [
 ];
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setInput } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, setInput, error } =
     useChat({
       maxSteps: 10,
       api: '/api/chat',
+      onError: (error) => {
+        console.error('Chat error:', error);
+      },
     });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -49,9 +52,15 @@ export default function Chat() {
     }
   }, [input]);
 
-  const handleQuickPrompt = (prompt: string) => {
+  const handleQuickPrompt = async (prompt: string) => {
     setInput(prompt);
-    textareaRef.current?.focus();
+    // Wait for state update, then submit
+    setTimeout(() => {
+      const form = textareaRef.current?.form;
+      if (form) {
+        form.requestSubmit();
+      }
+    }, 0);
   };
 
   return (
@@ -175,9 +184,16 @@ export default function Chat() {
               <Send className="h-5 w-5" />
             </Button>
           </form>
-          <p className="text-xs text-muted-foreground text-center mt-2">
-            Press Enter to send, Shift+Enter for new line
-          </p>
+          {error && (
+            <div className="text-xs text-red-600 text-center mt-2">
+              Error: {error.message}
+            </div>
+          )}
+          {!error && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Press Enter to send, Shift+Enter for new line
+            </p>
+          )}
         </div>
       </div>
     </div>
