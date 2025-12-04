@@ -28,15 +28,17 @@ export default function DashboardLayout() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
+          "--sidebar-width": "280px",
+          "--header-height": "56px",
         } as React.CSSProperties
       }
     >
       <AppSidebar variant="inset" user={user} />
-      <SidebarInset>
+      <SidebarInset className="min-h-screen">
         <SiteHeader />
-        <Outlet />
+        <div className="flex-1 w-full px-4 py-4 max-w-screen-sm mx-auto">
+          <Outlet />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
