@@ -95,6 +95,7 @@ export default function Chat() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let aiMessage = '';
+      let buffer = ''; // Buffer for incomplete lines
 
       const assistantMessageId = (Date.now() + 1).toString();
 
@@ -103,8 +104,11 @@ export default function Chat() {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+
+          // Keep the last incomplete line in the buffer
+          buffer = lines.pop() || '';
 
           for (const line of lines) {
             if (line.startsWith('0:')) {
@@ -113,9 +117,10 @@ export default function Chat() {
                 const data = JSON.parse(jsonStr);
                 if (data && typeof data === 'string') {
                   aiMessage += data;
+                  console.log('Chunk:', data); // Debug log
                 }
               } catch (e) {
-                // Skip invalid JSON
+                console.error('Parse error for line:', line, e);
               }
             }
           }
@@ -136,9 +141,30 @@ export default function Chat() {
             return newMessages;
           });
         }
+
+        // Process any remaining buffer
+        if (buffer && buffer.startsWith('0:')) {
+          try {
+            const jsonStr = buffer.substring(2);
+            const data = JSON.parse(jsonStr);
+            if (data && typeof data === 'string') {
+              aiMessage += data;
+              setMessages(prev => {
+                const newMessages = [...prev];
+                const lastMessage = newMessages[newMessages.length - 1];
+                if (lastMessage && lastMessage.role === 'assistant') {
+                  lastMessage.content = aiMessage;
+                }
+                return newMessages;
+              });
+            }
+          } catch (e) {
+            console.error('Final buffer parse error:', e);
+          }
+        }
       }
 
-      console.log('Message sent successfully');
+      console.log('Message sent successfully, total length:', aiMessage.length);
     } catch (err) {
       console.error('Error sending message:', err);
       setError(err instanceof Error ? err.message : 'Failed to send message');

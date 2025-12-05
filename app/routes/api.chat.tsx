@@ -51,8 +51,16 @@ Current capabilities:
       async start(controller) {
         try {
           for await (const chunk of result.textStream) {
-            const data = `0:"${chunk.replace(/"/g, '\\"')}"\n`;
+            // Properly escape the chunk for JSON
+            const escapedChunk = chunk
+              .replace(/\\/g, '\\\\')
+              .replace(/"/g, '\\"')
+              .replace(/\n/g, '\\n')
+              .replace(/\r/g, '\\r')
+              .replace(/\t/g, '\\t');
+            const data = `0:"${escapedChunk}"\n`;
             controller.enqueue(encoder.encode(data));
+            console.log('Sent chunk:', chunk.substring(0, 50)); // Debug log
           }
           controller.close();
         } catch (error) {
