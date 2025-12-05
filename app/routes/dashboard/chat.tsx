@@ -305,7 +305,6 @@ export default function Chat() {
               <div ref={messagesEndRef} />
             </>
           )}
-        </div>
       </div>
 
       {/* Input Area - Sticky at bottom */}
