@@ -44,7 +44,8 @@ export function BottomNav() {
             <Link
               key={item.href}
               to={item.href}
-              prefetch="render"
+              prefetch="intent"
+              viewTransition
               className={cn(
                 "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors",
                 isActive

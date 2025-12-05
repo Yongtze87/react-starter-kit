@@ -34,9 +34,12 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const typingQueueRef = useRef<string[]>([]);
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   console.log('Chat render - messages:', messages.length, 'input:', input, 'isLoading:', isLoading);
 
@@ -53,8 +56,58 @@ export default function Chat() {
     }
   }, [input]);
 
+  // Typing simulation effect
+  const startTypingSimulation = (fullText: string, messageId: string) => {
+    setIsTyping(true);
+
+    // Split text into chunks (words and punctuation)
+    const chunks = fullText.split(/(\s+|[.!?,;:])/g).filter(Boolean);
+    typingQueueRef.current = chunks;
+
+    let currentText = '';
+    let chunkIndex = 0;
+
+    // Clear any existing interval
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+    }
+
+    typingIntervalRef.current = setInterval(() => {
+      if (chunkIndex < chunks.length) {
+        currentText += chunks[chunkIndex];
+        chunkIndex++;
+
+        setMessages(prev => {
+          const newMessages = [...prev];
+          const msgIndex = newMessages.findIndex(m => m.id === messageId);
+          if (msgIndex !== -1) {
+            newMessages[msgIndex].content = currentText;
+          }
+          return newMessages;
+        });
+      } else {
+        // Finished typing
+        if (typingIntervalRef.current) {
+          clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
+        }
+        setIsTyping(false);
+        typingQueueRef.current = [];
+      }
+    }, 30); // Adjust speed: 30ms per chunk (feels natural)
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+      }
+    };
+  }, []);
+
   const sendMessage = async (content: string) => {
-    if (!content.trim() || isLoading) return;
+    if (!content.trim() || isLoading || isTyping) return;
 
     console.log('Sending message:', content);
 
@@ -100,6 +153,7 @@ export default function Chat() {
       const assistantMessageId = (Date.now() + 1).toString();
 
       if (reader) {
+        // Collect all chunks first (no real-time display)
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -117,29 +171,12 @@ export default function Chat() {
                 const data = JSON.parse(jsonStr);
                 if (data && typeof data === 'string') {
                   aiMessage += data;
-                  console.log('Chunk:', data); // Debug log
                 }
               } catch (e) {
                 console.error('Parse error for line:', line, e);
               }
             }
           }
-
-          // Update message in real-time
-          setMessages(prev => {
-            const newMessages = [...prev];
-            const lastMessage = newMessages[newMessages.length - 1];
-            if (lastMessage && lastMessage.role === 'assistant' && lastMessage.id === assistantMessageId) {
-              lastMessage.content = aiMessage;
-            } else {
-              newMessages.push({
-                id: assistantMessageId,
-                role: 'assistant',
-                content: aiMessage,
-              });
-            }
-            return newMessages;
-          });
         }
 
         // Process any remaining buffer
@@ -149,14 +186,6 @@ export default function Chat() {
             const data = JSON.parse(jsonStr);
             if (data && typeof data === 'string') {
               aiMessage += data;
-              setMessages(prev => {
-                const newMessages = [...prev];
-                const lastMessage = newMessages[newMessages.length - 1];
-                if (lastMessage && lastMessage.role === 'assistant') {
-                  lastMessage.content = aiMessage;
-                }
-                return newMessages;
-              });
             }
           } catch (e) {
             console.error('Final buffer parse error:', e);
@@ -165,6 +194,17 @@ export default function Chat() {
       }
 
       console.log('Message sent successfully, total length:', aiMessage.length);
+      setIsLoading(false);
+
+      // Add empty message first, then start typing simulation
+      setMessages(prev => [...prev, {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: '',
+      }]);
+
+      // Start typing simulation with collected text
+      startTypingSimulation(aiMessage, assistantMessageId);
     } catch (err) {
       console.error('Error sending message:', err);
       setError(err instanceof Error ? err.message : 'Failed to send message');
@@ -250,8 +290,8 @@ export default function Chat() {
                 </div>
               ))}
 
-              {/* Loading indicator */}
-              {isLoading && (
+              {/* Loading/Typing indicator */}
+              {(isLoading || isTyping) && (
                 <div className="flex justify-start">
                   <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-sm">
                     <div className="flex gap-1.5">
@@ -278,7 +318,7 @@ export default function Chat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              disabled={isLoading}
+              disabled={isLoading || isTyping}
               rows={1}
               className="min-h-[44px] max-h-32 resize-none text-base py-3"
               onKeyDown={(e) => {
@@ -293,7 +333,7 @@ export default function Chat() {
             <Button
               type="submit"
               size="icon"
-              disabled={isLoading || !input?.trim()}
+              disabled={isLoading || isTyping || !input?.trim()}
               className="h-[44px] w-[44px] flex-shrink-0"
               onClick={() => console.log('Send button clicked')}
             >
