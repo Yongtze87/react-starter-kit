@@ -21,7 +21,7 @@ export async function action({ request }: Route.ActionArgs) {
       );
     }
 
-    const result = streamText({
+    const result = await streamText({
       model: google("gemini-2.0-flash-exp"),
       messages,
       system: `You are an AI Accounting Assistant. You help users with:
@@ -44,7 +44,31 @@ Current capabilities:
     });
 
     console.log('Streaming response');
-    return result.toDataStreamResponse();
+
+    // Create a streaming response
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of result.textStream) {
+            const data = `0:"${chunk.replace(/"/g, '\\"')}"\n`;
+            controller.enqueue(encoder.encode(data));
+          }
+          controller.close();
+        } catch (error) {
+          console.error('Streaming error:', error);
+          controller.error(error);
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
   } catch (error) {
     console.error('Chat API error:', error);
     return new Response(
