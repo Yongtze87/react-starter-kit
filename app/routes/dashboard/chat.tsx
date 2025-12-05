@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import Markdown from "react-markdown";
 import { Button } from "~/components/ui/button";
@@ -88,7 +86,10 @@ export default function Chat() {
       console.log('Response status:', response.status);
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        const errorMsg = errorData?.error || `API error: ${response.status}`;
+        console.error('API Error:', errorMsg);
+        throw new Error(errorMsg);
       }
 
       const reader = response.body?.getReader();

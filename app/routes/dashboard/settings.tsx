@@ -1,4 +1,3 @@
-"use client";
 import SubscriptionStatus from "~/components/subscription-status";
 
 export default function Page() {
