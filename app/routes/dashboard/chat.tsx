@@ -228,10 +228,9 @@ export default function Chat() {
   };
 
   return (
-    <div className="fixed inset-0 top-14 bottom-16 flex flex-col bg-background">
+    <div className="flex flex-col min-h-[calc(100vh-8rem)] -mx-4 -my-4">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-screen-sm mx-auto px-4 py-4 space-y-4">
+      <div className="flex-1 px-4 py-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
               <div className="bg-primary/10 p-4 rounded-full mb-4">
@@ -309,9 +308,9 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Input Area - Fixed at bottom */}
-      <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-screen-sm mx-auto px-4 py-3">
+      {/* Input Area - Sticky at bottom */}
+      <div className="sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="px-4 py-3">
           <form onSubmit={handleSubmit} className="flex gap-2 items-end">
             <Textarea
               ref={textareaRef}

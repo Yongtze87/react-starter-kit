@@ -1,4 +1,5 @@
 import { useLocation } from "react-router";
+import { useEffect } from "react";
 import { Outlet } from "react-router";
 import { BottomNav } from "~/components/mobile/bottom-nav";
 import { MobileHeader } from "~/components/mobile/mobile-header";
@@ -22,6 +23,12 @@ const pageTitles: Record<string, string> = {
 export default function DashboardLayout() {
   const location = useLocation();
   const title = pageTitles[location.pathname] || "Dashboard";
+
+  // Debug: Track render timing
+  useEffect(() => {
+    console.timeEnd(`Navigation to ${location.pathname}`);
+    console.log(`[LAYOUT] Rendered: ${location.pathname}`);
+  }, [location.pathname]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
