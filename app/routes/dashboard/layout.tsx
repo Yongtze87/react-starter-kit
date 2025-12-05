@@ -1,24 +1,16 @@
-import { useLoaderData, useLocation } from "react-router";
-import type { Route } from "./+types/layout";
+import { useLocation } from "react-router";
 import { Outlet } from "react-router";
 import { BottomNav } from "~/components/mobile/bottom-nav";
 import { MobileHeader } from "~/components/mobile/mobile-header";
 
-export async function loader(args: Route.LoaderArgs) {
-  // TODO: Add Supabase auth check and redirect to /sign-in if not authenticated
-  // TODO: Check subscription status and redirect to /subscription-required if needed
-
-  // Placeholder user data for development
-  const user = {
-    id: "demo-user-id",
-    fullName: "Demo User",
-    email: "demo@example.com",
-    initials: "DU",
-    imageUrl: null,
-  };
-
-  return { user };
-}
+// Mock user data - no loader needed for instant navigation
+const user = {
+  id: "demo-user-id",
+  fullName: "Demo User",
+  email: "demo@example.com",
+  initials: "DU",
+  imageUrl: null,
+};
 
 const pageTitles: Record<string, string> = {
   "/": "Dashboard",
@@ -28,7 +20,6 @@ const pageTitles: Record<string, string> = {
 };
 
 export default function DashboardLayout() {
-  const { user } = useLoaderData();
   const location = useLocation();
   const title = pageTitles[location.pathname] || "Dashboard";
 
@@ -37,7 +28,7 @@ export default function DashboardLayout() {
       <MobileHeader title={title} user={user} />
 
       {/* Main content area with padding for header and bottom nav */}
-      <main className="flex-1 pb-16 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
+      <main className="flex-1 pb-16 overflow-y-scroll">
         <div className="w-full max-w-screen-sm mx-auto px-4 py-4">
           <Outlet />
         </div>
