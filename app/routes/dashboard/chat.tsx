@@ -1,7 +1,6 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
-import { useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Markdown from "react-markdown";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
@@ -26,20 +25,22 @@ const quickPrompts = [
   },
 ];
 
-export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append, error } =
-    useChat({
-      maxSteps: 10,
-      api: '/api/chat',
-      onError: (error) => {
-        console.error('Chat error:', error);
-      },
-    });
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
 
-  console.log('Chat render - messages count:', messages.length, 'input:', input, 'isLoading:', isLoading);
+export default function Chat() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  console.log('Chat render - messages:', messages.length, 'input:', input, 'isLoading:', isLoading);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -54,27 +55,109 @@ export default function Chat() {
     }
   }, [input]);
 
-  const handleQuickPrompt = async (prompt: string) => {
-    console.log('Quick prompt clicked:', prompt);
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || isLoading) return;
+
+    console.log('Sending message:', content);
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: content.trim(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+    setError(null);
+
     try {
-      await append({
-        role: 'user',
-        content: prompt,
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map(m => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
       });
+
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let aiMessage = '';
+
+      const assistantMessageId = (Date.now() + 1).toString();
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('0:')) {
+              try {
+                const jsonStr = line.substring(2);
+                const data = JSON.parse(jsonStr);
+                if (data && typeof data === 'string') {
+                  aiMessage += data;
+                }
+              } catch (e) {
+                // Skip invalid JSON
+              }
+            }
+          }
+
+          // Update message in real-time
+          setMessages(prev => {
+            const newMessages = [...prev];
+            const lastMessage = newMessages[newMessages.length - 1];
+            if (lastMessage && lastMessage.role === 'assistant' && lastMessage.id === assistantMessageId) {
+              lastMessage.content = aiMessage;
+            } else {
+              newMessages.push({
+                id: assistantMessageId,
+                role: 'assistant',
+                content: aiMessage,
+              });
+            }
+            return newMessages;
+          });
+        }
+      }
+
+      console.log('Message sent successfully');
     } catch (err) {
-      console.error('Error sending quick prompt:', err);
+      console.error('Error sending message:', err);
+      setError(err instanceof Error ? err.message : 'Failed to send message');
+      // Remove the user message if failed
+      setMessages(prev => prev.slice(0, -1));
+      setInput(content); // Restore input
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const onSubmit = (e: React.FormEvent) => {
-    console.log('Form submit called, input:', input);
+  const handleQuickPrompt = (prompt: string) => {
+    console.log('Quick prompt clicked:', prompt);
+    sendMessage(prompt);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input?.trim()) {
-      console.log('Input is empty, not submitting');
-      return;
-    }
-    console.log('Calling handleSubmit');
-    handleSubmit(e);
+    console.log('Form submitted, input:', input);
+    sendMessage(input);
   };
 
   return (
@@ -103,7 +186,8 @@ export default function Chat() {
                     <button
                       key={idx}
                       onClick={() => handleQuickPrompt(prompt.prompt)}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left"
+                      disabled={isLoading}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left disabled:opacity-50"
                     >
                       <div className="flex-shrink-0 bg-primary/10 p-2 rounded-lg">
                         <Icon className="w-4 h-4 text-primary" />
@@ -116,7 +200,7 @@ export default function Chat() {
             </div>
           ) : (
             <>
-              {messages.map((message, i) => (
+              {messages.map((message) => (
                 <div
                   key={message.id}
                   className={cn(
@@ -132,21 +216,9 @@ export default function Chat() {
                         : "bg-muted text-foreground rounded-bl-sm"
                     )}
                   >
-                    {message.parts.map((part) => {
-                      switch (part.type) {
-                        case "text":
-                          return (
-                            <div
-                              key={`${message.id}-${i}`}
-                              className="text-sm leading-relaxed prose prose-sm prose-p:my-1 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 max-w-none dark:prose-invert"
-                            >
-                              <Markdown>{part.text}</Markdown>
-                            </div>
-                          );
-                        default:
-                          return null;
-                      }
-                    })}
+                    <div className="text-sm leading-relaxed prose prose-sm prose-p:my-1 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 max-w-none dark:prose-invert">
+                      <Markdown>{message.content}</Markdown>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -173,11 +245,11 @@ export default function Chat() {
       {/* Input Area - Fixed at bottom */}
       <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-screen-sm mx-auto px-4 py-3">
-          <form onSubmit={onSubmit} className="flex gap-2 items-end">
+          <form onSubmit={handleSubmit} className="flex gap-2 items-end">
             <Textarea
               ref={textareaRef}
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               disabled={isLoading}
               rows={1}
@@ -186,8 +258,8 @@ export default function Chat() {
                 console.log('Key pressed:', e.key);
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  console.log('Enter pressed, calling onSubmit');
-                  onSubmit(e);
+                  console.log('Enter pressed, submitting');
+                  handleSubmit(e);
                 }
               }}
             />
@@ -203,7 +275,7 @@ export default function Chat() {
           </form>
           {error && (
             <div className="text-xs text-red-600 text-center mt-2">
-              Error: {error.message}
+              Error: {error}
             </div>
           )}
           {!error && (
