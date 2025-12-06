@@ -34,7 +34,7 @@ const stats = [
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-3 w-full pb-4">
+    <div className="flex flex-col gap-2 w-full pb-4">
       {/* Welcome Section */}
       <div className="space-y-0.5">
         <h2 className="text-base font-semibold">Welcome back!</h2>
@@ -56,15 +56,15 @@ export default function Page() {
 
           return (
             <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-3">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0 p-2">
                 <CardTitle className="text-xs font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                <Icon className="h-3 w-3 text-muted-foreground" />
               </CardHeader>
-              <CardContent className="p-3 pt-0">
-                <div className="text-lg font-bold">{stat.value}</div>
-                <p className={`text-xs ${trendColor} flex items-center gap-1 mt-0.5`}>
+              <CardContent className="p-2 pt-0">
+                <div className="text-base font-bold">{stat.value}</div>
+                <p className={`text-xs ${trendColor} flex items-center gap-1`}>
                   {stat.trend === "up" && <TrendingUp className="h-3 w-3" />}
                   {stat.trend === "down" && <TrendingDown className="h-3 w-3" />}
                   {stat.change}
@@ -76,13 +76,13 @@ export default function Page() {
       </div>
 
       {/* Quick Actions */}
-      <div className="space-y-2 mt-1">
+      <div className="space-y-1.5 mt-0.5">
         <h3 className="text-xs font-semibold text-muted-foreground">
           Quick Actions
         </h3>
-        <div className="grid gap-2">
+        <div className="grid gap-1.5">
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-3">
+            <CardContent className="p-2.5">
               <p className="text-sm font-medium">Generate Monthly Report</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Get your P&L and expense summary
@@ -90,7 +90,7 @@ export default function Page() {
             </CardContent>
           </Card>
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-3">
+            <CardContent className="p-2.5">
               <p className="text-sm font-medium">Upload Receipt</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Quick capture with AI extraction
@@ -98,7 +98,7 @@ export default function Page() {
             </CardContent>
           </Card>
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-3">
+            <CardContent className="p-2.5">
               <p className="text-sm font-medium">Ask AI Assistant</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Get instant answers to financial questions
