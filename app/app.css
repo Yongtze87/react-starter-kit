@@ -125,13 +125,18 @@
         @apply font-medium tracking-tight;
     }
 
-    /* Hide scrollbar but keep functionality - macOS/iOS style overlay scrollbar */
+    /* Overlay scrollbar - hidden by default, shows on scroll, doesn't affect layout */
     * {
         scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+    }
+
+    /* Show scrollbar when hovering */
+    *:hover {
         scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
     }
 
-    /* For Webkit browsers (Chrome, Safari, Edge) */
+    /* For Webkit browsers (Chrome, Safari, Edge) - overlay scrollbar */
     *::-webkit-scrollbar {
         width: 8px;
     }
@@ -141,17 +146,18 @@
     }
 
     *::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.2);
+        background: transparent;
         border-radius: 4px;
+    }
+
+    /* Show scrollbar thumb only when hovering or scrolling */
+    *:hover::-webkit-scrollbar-thumb,
+    *:active::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
     }
 
     *::-webkit-scrollbar-thumb:hover {
         background: rgba(0, 0, 0, 0.3);
-    }
-
-    /* Make scrollbar overlay (doesn't take up space) on Webkit */
-    *::-webkit-scrollbar {
-        width: 8px;
     }
 }
 
