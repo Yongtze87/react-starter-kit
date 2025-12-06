@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { TrendingUp, TrendingDown, DollarSign, Receipt } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Receipt, Clock } from "lucide-react";
 
 const stats = [
   {
@@ -29,6 +29,27 @@ const stats = [
     change: "3 new",
     trend: "neutral" as const,
     icon: Receipt,
+  },
+];
+
+const reminders = [
+  {
+    title: "GST Filing Deadline",
+    dueDate: "Jan 31, 2025",
+    daysLeft: 25,
+    priority: "high" as const,
+  },
+  {
+    title: "Corporate Tax Filing",
+    dueDate: "Feb 28, 2025",
+    daysLeft: 53,
+    priority: "medium" as const,
+  },
+  {
+    title: "CPF Contribution Payment",
+    dueDate: "Jan 14, 2025",
+    daysLeft: 8,
+    priority: "high" as const,
   },
 ];
 
@@ -73,6 +94,37 @@ export default function Page() {
             </Card>
           );
         })}
+      </div>
+
+      {/* Reminders Section */}
+      <div className="space-y-1.5 mt-0.5">
+        <h3 className="text-xs font-semibold text-muted-foreground">
+          Upcoming Deadlines
+        </h3>
+        <div className="grid gap-1.5">
+          {reminders.map((reminder, idx) => (
+            <Card key={idx} className="py-1.5 gap-0">
+              <CardContent className="p-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2 flex-1">
+                    <Clock className={`h-3.5 w-3.5 mt-0.5 flex-shrink-0 ${
+                      reminder.priority === "high" ? "text-red-600" : "text-yellow-600"
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">{reminder.title}</p>
+                      <p className="text-xs text-muted-foreground">Due: {reminder.dueDate}</p>
+                    </div>
+                  </div>
+                  <span className={`text-xs font-semibold whitespace-nowrap ${
+                    reminder.daysLeft <= 10 ? "text-red-600" : "text-muted-foreground"
+                  }`}>
+                    {reminder.daysLeft}d
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Quick Actions */}
