@@ -11,10 +11,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { Analytics } from "@vercel/analytics/react";
 
-export async function loader(args: Route.LoaderArgs) {
-  // TODO: Add Supabase session check here
-  return { user: null };
-}
+// No loader needed - mock data in layout for instant navigation
 export const links: Route.LinksFunction = () => [
   // DNS prefetch for external services
   { rel: "dns-prefetch", href: "https://fonts.googleapis.com" },

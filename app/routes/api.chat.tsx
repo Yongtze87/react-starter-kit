@@ -9,6 +9,8 @@ const google = createGoogleGenerativeAI({
 export async function action({ request }: Route.ActionArgs) {
   try {
     console.log('Chat API called');
+    console.log('API Key present:', !!process.env.GOOGLE_AI_API_KEY);
+    console.log('API Key length:', process.env.GOOGLE_AI_API_KEY?.length || 0);
 
     const { messages } = await request.json();
     console.log('Received messages:', messages?.length);

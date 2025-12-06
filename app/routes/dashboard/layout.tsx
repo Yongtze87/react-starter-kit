@@ -24,10 +24,11 @@ export default function DashboardLayout() {
   const location = useLocation();
   const title = pageTitles[location.pathname] || "Dashboard";
 
-  // Debug: Track render timing
+  // Debug: Track render timing with more granularity
   useEffect(() => {
     console.timeEnd(`Navigation to ${location.pathname}`);
     console.log(`[LAYOUT] Rendered: ${location.pathname}`);
+    console.log(`[PERF] If delay >100ms, it's likely Vercel Analytics pageview tracking (external service call)`);
   }, [location.pathname]);
 
   return (
