@@ -124,6 +124,35 @@
     h6 {
         @apply font-medium tracking-tight;
     }
+
+    /* Hide scrollbar but keep functionality - macOS/iOS style overlay scrollbar */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    /* For Webkit browsers (Chrome, Safari, Edge) */
+    *::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    /* Make scrollbar overlay (doesn't take up space) on Webkit */
+    *::-webkit-scrollbar {
+        width: 8px;
+    }
 }
 
 .dark {

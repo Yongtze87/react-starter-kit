@@ -36,7 +36,7 @@ export default function DashboardLayout() {
       <MobileHeader title={title} user={user} />
 
       {/* Main content area with padding for header and bottom nav */}
-      <main className="flex-1 pb-16 overflow-y-scroll">
+      <main className="flex-1 pb-16 overflow-y-auto">
         <div className="w-full max-w-screen-sm mx-auto px-4 py-4">
           <Outlet />
         </div>
