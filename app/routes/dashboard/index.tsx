@@ -56,15 +56,15 @@ export default function Page() {
 
           return (
             <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0 p-2">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0 p-1.5">
                 <CardTitle className="text-xs font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
                 <Icon className="h-3 w-3 text-muted-foreground" />
               </CardHeader>
-              <CardContent className="p-2 pt-0">
+              <CardContent className="p-1.5 pt-0">
                 <div className="text-base font-bold">{stat.value}</div>
-                <p className={`text-xs ${trendColor} flex items-center gap-1`}>
+                <p className={`text-xs ${trendColor} flex items-center gap-0.5`}>
                   {stat.trend === "up" && <TrendingUp className="h-3 w-3" />}
                   {stat.trend === "down" && <TrendingDown className="h-3 w-3" />}
                   {stat.change}
@@ -82,7 +82,7 @@ export default function Page() {
         </h3>
         <div className="grid gap-1.5">
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-2.5">
+            <CardContent className="p-2">
               <p className="text-sm font-medium">Generate Monthly Report</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Get your P&L and expense summary
@@ -90,7 +90,7 @@ export default function Page() {
             </CardContent>
           </Card>
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-2.5">
+            <CardContent className="p-2">
               <p className="text-sm font-medium">Upload Receipt</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Quick capture with AI extraction
@@ -98,7 +98,7 @@ export default function Page() {
             </CardContent>
           </Card>
           <Card className="cursor-pointer hover:bg-accent transition-colors">
-            <CardContent className="p-2.5">
+            <CardContent className="p-2">
               <p className="text-sm font-medium">Ask AI Assistant</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Get instant answers to financial questions
