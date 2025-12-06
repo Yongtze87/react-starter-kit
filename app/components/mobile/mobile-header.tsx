@@ -27,8 +27,8 @@ export function MobileHeader({ title, user }: MobileHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-background">
-      <div className="flex items-center justify-between h-14 px-4 max-w-screen-sm mx-auto border-b border-border">
+    <header className="sticky top-0 z-40 bg-background border-b border-border">
+      <div className="flex items-center justify-between h-14 px-4 max-w-screen-sm mx-auto">
         <h1 className="text-lg font-semibold">{title}</h1>
 
         <DropdownMenu>
