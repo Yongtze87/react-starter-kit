@@ -9,7 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { Analytics } from "@vercel/analytics/react";
+// Analytics removed - not needed for personal finance app, was blocking navigation
 
 // No loader needed - mock data in layout for instant navigation
 export const links: Route.LinksFunction = () => [
@@ -67,7 +67,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="touch-manipulation">
-        <Analytics />
         {children}
         <ScrollRestoration />
         <Scripts />
