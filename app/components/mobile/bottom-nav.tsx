@@ -33,12 +33,6 @@ const navItems = [
 export function BottomNav() {
   const location = useLocation();
 
-  // Debug: Track navigation timing
-  const handleNavClick = (href: string) => {
-    console.time(`Navigation to ${href}`);
-    console.log(`[NAV] Clicked: ${location.pathname} → ${href}`);
-  };
-
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
       <div className="flex items-center justify-around h-16 max-w-screen-sm mx-auto">
@@ -51,7 +45,6 @@ export function BottomNav() {
               key={item.href}
               to={item.href}
               prefetch="render"
-              onClick={() => handleNavClick(item.href)}
               className={cn(
                 "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors",
                 isActive
