@@ -54,26 +54,26 @@ const statusConfig = {
 
 export default function Documents() {
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-2 w-full">
       {/* Upload Section */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Upload Document</CardTitle>
+      <Card className="py-2 gap-0">
+        <CardHeader className="pb-1.5 p-2">
+          <CardTitle className="text-sm">Upload Document</CardTitle>
           <CardDescription className="text-xs">
             Upload receipts, invoices, or bank statements
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button className="w-full" size="lg">
-            <Upload className="w-4 h-4 mr-2" />
+        <CardContent className="p-2 pt-0">
+          <Button className="w-full h-9 text-xs">
+            <Upload className="w-3.5 h-3.5 mr-1.5" />
             Choose File
           </Button>
         </CardContent>
       </Card>
 
       {/* Documents List */}
-      <div className="space-y-2">
-        <h2 className="text-sm font-semibold text-muted-foreground px-1">
+      <div className="space-y-1.5">
+        <h2 className="text-xs font-semibold text-muted-foreground">
           Recent Documents
         </h2>
         {documents.map((doc) => {
@@ -81,17 +81,17 @@ export default function Documents() {
           const statusColor = statusConfig[doc.status as keyof typeof statusConfig].color;
 
           return (
-            <Card key={doc.id} className="cursor-pointer hover:bg-accent transition-colors">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <FileText className="w-8 h-8 text-muted-foreground" />
+            <Card key={doc.id} className="cursor-pointer hover:bg-accent transition-colors py-2 gap-0">
+              <CardContent className="p-2">
+                <div className="flex items-start gap-2">
+                  <div className="flex-shrink-0">
+                    <FileText className="w-6 h-6 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{doc.name}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs text-muted-foreground">
                           {doc.type} • {doc.uploadDate}
                         </p>
                       </div>
@@ -101,9 +101,9 @@ export default function Documents() {
                         </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 mt-2">
-                      <StatusIcon className={`w-3.5 h-3.5 ${statusColor}`} />
-                      <span className={`text-xs font-medium ${statusColor}`}>
+                    <div className="flex items-center gap-1 mt-1">
+                      <StatusIcon className={`w-3 h-3 ${statusColor}`} />
+                      <span className={`text-xs ${statusColor}`}>
                         {statusConfig[doc.status as keyof typeof statusConfig].label}
                       </span>
                     </div>

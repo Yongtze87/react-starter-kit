@@ -55,7 +55,7 @@ export default function Page() {
               : "text-muted-foreground";
 
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="py-1.5 gap-0">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0 p-1.5">
                 <CardTitle className="text-xs font-medium text-muted-foreground">
                   {stat.title}
@@ -81,7 +81,7 @@ export default function Page() {
           Quick Actions
         </h3>
         <div className="grid gap-1.5">
-          <Card className="cursor-pointer hover:bg-accent transition-colors">
+          <Card className="cursor-pointer hover:bg-accent transition-colors py-2 gap-0">
             <CardContent className="p-2">
               <p className="text-sm font-medium">Generate Monthly Report</p>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -89,7 +89,7 @@ export default function Page() {
               </p>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:bg-accent transition-colors">
+          <Card className="cursor-pointer hover:bg-accent transition-colors py-2 gap-0">
             <CardContent className="p-2">
               <p className="text-sm font-medium">Upload Receipt</p>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -97,7 +97,7 @@ export default function Page() {
               </p>
             </CardContent>
           </Card>
-          <Card className="cursor-pointer hover:bg-accent transition-colors">
+          <Card className="cursor-pointer hover:bg-accent transition-colors py-2 gap-0">
             <CardContent className="p-2">
               <p className="text-sm font-medium">Ask AI Assistant</p>
               <p className="text-xs text-muted-foreground mt-0.5">
