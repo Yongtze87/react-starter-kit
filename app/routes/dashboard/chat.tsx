@@ -41,7 +41,7 @@ export default function Chat() {
   const typingQueueRef = useRef<string[]>([]);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  console.log('Chat render - messages:', messages.length, 'input:', input, 'isLoading:', isLoading);
+  // Removed noisy render logging - React 19 strict mode causes double renders in dev
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
