@@ -109,8 +109,6 @@ export default function Chat() {
   const sendMessage = async (content: string) => {
     if (!content.trim() || isLoading || isTyping) return;
 
-    console.log('Sending message:', content);
-
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -135,8 +133,6 @@ export default function Chat() {
           })),
         }),
       });
-
-      console.log('Response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
@@ -193,7 +189,6 @@ export default function Chat() {
         }
       }
 
-      console.log('Message sent successfully, total length:', aiMessage.length);
       setIsLoading(false);
 
       // Add empty message first, then start typing simulation
@@ -217,13 +212,11 @@ export default function Chat() {
   };
 
   const handleQuickPrompt = (prompt: string) => {
-    console.log('Quick prompt clicked:', prompt);
     sendMessage(prompt);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted, input:', input);
     sendMessage(input);
   };
 
@@ -320,10 +313,8 @@ export default function Chat() {
               rows={1}
               className="min-h-[44px] max-h-32 resize-none text-base py-3"
               onKeyDown={(e) => {
-                console.log('Key pressed:', e.key);
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                  console.log('Enter pressed, submitting');
                   handleSubmit(e);
                 }
               }}
@@ -333,7 +324,6 @@ export default function Chat() {
               size="icon"
               disabled={isLoading || isTyping || !input?.trim()}
               className="h-[44px] w-[44px] flex-shrink-0"
-              onClick={() => console.log('Send button clicked')}
             >
               <Send className="h-5 w-5" />
             </Button>
