@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { NeoCard, NeoCardContent, NeoCardDescription, NeoCardHeader, NeoCardTitle } from "~/components/ui/neo-card";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { Bell, Lock, User, CreditCard, Database, Moon, Globe } from "lucide-react";
@@ -87,14 +87,14 @@ export default function Page() {
       {settingsSections.map((section) => {
         const Icon = section.icon;
         return (
-          <Card key={section.title} className="neo-card-sm">
-            <CardHeader className="p-3 pb-2">
+          <NeoCard key={section.title}>
+            <NeoCardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
                 <Icon className="h-4 w-4 text-black" />
-                <CardTitle className="text-sm font-bold">{section.title}</CardTitle>
+                <NeoCardTitle className="text-sm font-bold">{section.title}</NeoCardTitle>
               </div>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
+            </NeoCardHeader>
+            <NeoCardContent className="p-3 pt-0">
               <div className="space-y-2">
                 {section.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center py-1.5 border-b-2 border-[#f0f0f0] last:border-0">
@@ -106,28 +106,28 @@ export default function Page() {
               <Button variant="outline" size="sm" className="w-full mt-3 h-8 text-xs neo-btn bg-white hover:bg-[#fffef5] font-bold">
                 Edit {section.title}
               </Button>
-            </CardContent>
-          </Card>
+            </NeoCardContent>
+          </NeoCard>
         );
       })}
 
       {/* Danger Zone */}
-      <Card className="neo-card-sm bg-[#ffe5e5]">
-        <CardHeader className="p-3 pb-2">
-          <CardTitle className="text-sm font-bold text-[#ff6b6b]">⚠️ Danger Zone</CardTitle>
-          <CardDescription className="text-xs font-semibold text-[#666]">
+      <NeoCard className="bg-[#ffe5e5]">
+        <NeoCardHeader className="p-3 pb-2">
+          <NeoCardTitle className="text-sm font-bold text-[#ff6b6b]">⚠️ Danger Zone</NeoCardTitle>
+          <NeoCardDescription className="text-xs font-semibold text-[#666]">
             Irreversible actions that affect your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-3 pt-0 space-y-2">
+          </NeoCardDescription>
+        </NeoCardHeader>
+        <NeoCardContent className="p-3 pt-0 space-y-2">
           <Button variant="outline" size="sm" className="w-full h-8 text-xs neo-btn bg-white text-[#ff6b6b] border-[#ff6b6b] hover:bg-[#ff6b6b] hover:text-white font-bold">
             Export All Data
           </Button>
           <Button variant="outline" size="sm" className="w-full h-8 text-xs neo-btn bg-white text-[#ff6b6b] border-[#ff6b6b] hover:bg-[#ff6b6b] hover:text-white font-bold">
             Delete Account
           </Button>
-        </CardContent>
-      </Card>
+        </NeoCardContent>
+      </NeoCard>
     </div>
   );
 }

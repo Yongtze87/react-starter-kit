@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Markdown from "react-markdown";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
+import { NeoCard } from "~/components/ui/neo-card";
 import { cn } from "~/lib/utils";
 import { Send, Sparkles, TrendingUp, FileText, Calculator } from "lucide-react";
 
@@ -243,17 +244,16 @@ export default function Chat() {
                   {quickPrompts.map((prompt, idx) => {
                     const Icon = prompt.icon;
                     return (
-                      <button
+                      <NeoCard
                         key={idx}
                         onClick={() => handleQuickPrompt(prompt.prompt)}
-                        disabled={isLoading}
-                        className="neo-card-sm flex flex-col items-center gap-2 p-2.5 bg-card hover:bg-[#fffef5] transition-colors disabled:opacity-50"
+                        className="flex flex-col items-center gap-2 p-2.5 cursor-pointer hover:bg-[#fffef5] transition-colors disabled:opacity-50"
                       >
                         <div className="flex-shrink-0 bg-[#00d4a1] p-2 rounded-lg border-2 border-black">
                           <Icon className="w-4 h-4 text-black" />
                         </div>
                         <span className="text-xs font-bold text-center leading-tight">{prompt.text}</span>
-                      </button>
+                      </NeoCard>
                     );
                   })}
                 </div>

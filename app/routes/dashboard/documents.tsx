@@ -1,7 +1,6 @@
 import { Upload, FileText, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+import { NeoCard, NeoCardContent, NeoCardDescription, NeoCardHeader, NeoCardTitle } from "~/components/ui/neo-card";
 
 // Mock documents data
 const documents = [
@@ -56,20 +55,20 @@ export default function Documents() {
   return (
     <div className="flex flex-col gap-2 w-full">
       {/* Upload Section */}
-      <Card className="py-2 gap-0 neo-card-sm">
-        <CardHeader className="pb-1.5 p-2">
-          <CardTitle className="text-sm font-bold">📤 Upload Document</CardTitle>
-          <CardDescription className="text-xs font-semibold text-[#666]">
+      <NeoCard className="py-2 gap-0">
+        <NeoCardHeader className="pb-1.5 p-2">
+          <NeoCardTitle className="text-sm font-bold">📤 Upload Document</NeoCardTitle>
+          <NeoCardDescription className="text-xs font-semibold text-[#666]">
             Upload receipts, invoices, or bank statements
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-2 pt-0">
+          </NeoCardDescription>
+        </NeoCardHeader>
+        <NeoCardContent className="p-2 pt-0">
           <Button className="w-full h-9 text-xs neo-btn bg-black text-white hover:bg-black font-bold">
             <Upload className="w-3.5 h-3.5 mr-1.5" />
             Choose File
           </Button>
-        </CardContent>
-      </Card>
+        </NeoCardContent>
+      </NeoCard>
 
       {/* Documents List */}
       <div className="space-y-1.5">
@@ -81,8 +80,8 @@ export default function Documents() {
           const statusColor = statusConfig[doc.status as keyof typeof statusConfig].color;
 
           return (
-            <Card key={doc.id} className="cursor-pointer hover:bg-[#fffef5] transition-colors py-2 gap-0 neo-card-sm">
-              <CardContent className="p-2">
+            <NeoCard key={doc.id} className="cursor-pointer hover:bg-[#fffef5] transition-colors py-2 gap-0">
+              <NeoCardContent className="p-2">
                 <div className="flex items-start gap-2">
                   <div className="flex-shrink-0">
                     <FileText className="w-6 h-6 text-black" />
@@ -109,8 +108,8 @@ export default function Documents() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </NeoCardContent>
+            </NeoCard>
           );
         })}
       </div>
