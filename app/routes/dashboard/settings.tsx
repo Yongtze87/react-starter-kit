@@ -87,23 +87,23 @@ export default function Page() {
       {settingsSections.map((section) => {
         const Icon = section.icon;
         return (
-          <Card key={section.title}>
+          <Card key={section.title} className="neo-card-sm">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4 text-muted-foreground" />
-                <CardTitle className="text-sm font-semibold">{section.title}</CardTitle>
+                <Icon className="h-4 w-4 text-black" />
+                <CardTitle className="text-sm font-bold">{section.title}</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
               <div className="space-y-2">
                 {section.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center py-1.5 border-b last:border-0">
-                    <Label className="text-xs text-muted-foreground">{item.label}</Label>
-                    <span className="text-xs font-medium">{item.value}</span>
+                  <div key={idx} className="flex justify-between items-center py-1.5 border-b-2 border-[#f0f0f0] last:border-0">
+                    <Label className="text-xs font-semibold text-[#666]">{item.label}</Label>
+                    <span className="text-xs font-bold">{item.value}</span>
                   </div>
                 ))}
               </div>
-              <Button variant="outline" size="sm" className="w-full mt-3 h-8 text-xs">
+              <Button variant="outline" size="sm" className="w-full mt-3 h-8 text-xs neo-btn bg-white hover:bg-[#fffef5] font-bold">
                 Edit {section.title}
               </Button>
             </CardContent>
@@ -112,18 +112,18 @@ export default function Page() {
       })}
 
       {/* Danger Zone */}
-      <Card className="border-destructive/50">
+      <Card className="neo-card-sm bg-[#ffe5e5]">
         <CardHeader className="p-3 pb-2">
-          <CardTitle className="text-sm font-semibold text-destructive">Danger Zone</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-sm font-bold text-[#ff6b6b]">⚠️ Danger Zone</CardTitle>
+          <CardDescription className="text-xs font-semibold text-[#666]">
             Irreversible actions that affect your account
           </CardDescription>
         </CardHeader>
         <CardContent className="p-3 pt-0 space-y-2">
-          <Button variant="outline" size="sm" className="w-full h-8 text-xs text-destructive border-destructive/50 hover:bg-destructive hover:text-destructive-foreground">
+          <Button variant="outline" size="sm" className="w-full h-8 text-xs neo-btn bg-white text-[#ff6b6b] border-[#ff6b6b] hover:bg-[#ff6b6b] hover:text-white font-bold">
             Export All Data
           </Button>
-          <Button variant="outline" size="sm" className="w-full h-8 text-xs text-destructive border-destructive/50 hover:bg-destructive hover:text-destructive-foreground">
+          <Button variant="outline" size="sm" className="w-full h-8 text-xs neo-btn bg-white text-[#ff6b6b] border-[#ff6b6b] hover:bg-[#ff6b6b] hover:text-white font-bold">
             Delete Account
           </Button>
         </CardContent>

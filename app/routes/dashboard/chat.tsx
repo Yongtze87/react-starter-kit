@@ -226,35 +226,37 @@ export default function Chat() {
       <div className="flex-1 px-4 py-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-              <div className="bg-primary/10 p-4 rounded-full mb-4">
-                <Sparkles className="w-8 h-8 text-primary" />
+              <div className="bg-[#00d4a1] p-4 rounded-2xl mb-4 border-[3px] border-black" style={{boxShadow: '4px 4px 0 rgba(0, 0, 0, 1)'}}>
+                <Sparkles className="w-8 h-8 text-black" />
               </div>
-              <h2 className="text-xl font-semibold mb-2">AI Accounting Assistant</h2>
-              <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+              <h2 className="text-xl font-extrabold mb-2 tracking-tight">AI Accounting Assistant</h2>
+              <p className="text-sm font-semibold text-[#666] mb-6 max-w-xs">
                 Ask me anything about your finances. I can help with reports, analysis, and more.
               </p>
 
               {/* Quick Prompts */}
-              <div className="w-full space-y-2 mt-4">
-                <p className="text-xs font-medium text-muted-foreground mb-3">
+              <div className="w-full mt-4">
+                <p className="text-xs font-bold text-muted-foreground mb-3">
                   Try asking:
                 </p>
-                {quickPrompts.map((prompt, idx) => {
-                  const Icon = prompt.icon;
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => handleQuickPrompt(prompt.prompt)}
-                      disabled={isLoading}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left disabled:opacity-50"
-                    >
-                      <div className="flex-shrink-0 bg-primary/10 p-2 rounded-lg">
-                        <Icon className="w-4 h-4 text-primary" />
-                      </div>
-                      <span className="text-sm font-medium">{prompt.text}</span>
-                    </button>
-                  );
-                })}
+                <div className="grid grid-cols-3 gap-2">
+                  {quickPrompts.map((prompt, idx) => {
+                    const Icon = prompt.icon;
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => handleQuickPrompt(prompt.prompt)}
+                        disabled={isLoading}
+                        className="neo-card-sm flex flex-col items-center gap-2 p-2.5 bg-card hover:bg-[#fffef5] transition-colors disabled:opacity-50"
+                      >
+                        <div className="flex-shrink-0 bg-[#00d4a1] p-2 rounded-lg border-2 border-black">
+                          <Icon className="w-4 h-4 text-black" />
+                        </div>
+                        <span className="text-xs font-bold text-center leading-tight">{prompt.text}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           ) : (
@@ -269,11 +271,12 @@ export default function Chat() {
                 >
                   <div
                     className={cn(
-                      "max-w-[85%] px-4 py-3 rounded-2xl shadow-sm",
+                      "max-w-[85%] px-4 py-3 rounded-2xl border-2 border-black",
                       message.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-br-sm"
-                        : "bg-muted text-foreground rounded-bl-sm"
+                        ? "bg-[#00d4a1] text-black rounded-br-sm font-semibold"
+                        : "bg-[#f9f9f9] text-foreground rounded-bl-sm font-semibold"
                     )}
+                    style={{boxShadow: '3px 3px 0 rgba(0, 0, 0, 1)'}}
                   >
                     <div className="text-sm leading-relaxed prose prose-sm prose-p:my-1 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 max-w-none dark:prose-invert">
                       <Markdown>{message.content}</Markdown>
@@ -285,11 +288,11 @@ export default function Chat() {
               {/* Loading/Typing indicator */}
               {(isLoading || isTyping) && (
                 <div className="flex justify-start">
-                  <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-sm">
+                  <div className="bg-[#f9f9f9] px-4 py-3 rounded-2xl rounded-bl-sm border-2 border-black" style={{boxShadow: '3px 3px 0 rgba(0, 0, 0, 1)'}}>
                     <div className="flex gap-1.5">
-                      <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <div className="w-2 h-2 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-black/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
                   </div>
                 </div>
@@ -311,7 +314,7 @@ export default function Chat() {
               placeholder="Type your message..."
               disabled={isLoading || isTyping}
               rows={1}
-              className="min-h-[44px] max-h-32 resize-none text-base py-3"
+              className="min-h-[44px] max-h-32 resize-none text-base py-3 neo-input font-semibold"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -323,18 +326,18 @@ export default function Chat() {
               type="submit"
               size="icon"
               disabled={isLoading || isTyping || !input?.trim()}
-              className="h-[44px] w-[44px] flex-shrink-0"
+              className="h-[44px] w-[44px] flex-shrink-0 neo-btn bg-black text-white hover:bg-black"
             >
               <Send className="h-5 w-5" />
             </Button>
           </form>
           {error && (
-            <div className="text-xs text-red-600 text-center mt-2">
+            <div className="text-xs font-bold text-[#ff6b6b] text-center mt-2">
               Error: {error}
             </div>
           )}
           {!error && (
-            <p className="text-xs text-muted-foreground text-center mt-2">
+            <p className="text-xs font-semibold text-[#666] text-center mt-2">
               Press Enter to send, Shift+Enter for new line
             </p>
           )}
