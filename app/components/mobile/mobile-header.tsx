@@ -27,7 +27,7 @@ export function MobileHeader({ title, user }: MobileHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#fff9e5] border-b border-[#e5e5e5]">
+    <header className="sticky top-0 z-40 bg-[#FFD54F] border-b border-[#e5e5e5]">
       <div className="flex items-center justify-between h-14 px-4 max-w-screen-sm mx-auto">
         <h1 className="text-lg font-bold">{title}</h1>
 
