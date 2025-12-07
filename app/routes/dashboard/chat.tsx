@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { NeoCard } from "~/components/ui/neo-card";
 import { cn } from "~/lib/utils";
-import { Send, Sparkles, TrendingUp, FileText, Calculator } from "lucide-react";
+import { Send, Sparkles, TrendingUp, FileText, Calculator, Trash2 } from "lucide-react";
 
 const quickPrompts = [
   {
@@ -30,6 +30,9 @@ interface Message {
   content: string;
 }
 
+const STORAGE_KEY = 'chat-history';
+const MAX_STORED_MESSAGES = 10;
+
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -41,6 +44,32 @@ export default function Chat() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingQueueRef = useRef<string[]>([]);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load conversation history from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setMessages(parsed);
+      }
+    } catch (error) {
+      console.error('Failed to load chat history:', error);
+    }
+  }, []);
+
+  // Save conversation history to localStorage (keep last 10 messages)
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        // Keep only the last MAX_STORED_MESSAGES
+        const messagesToStore = messages.slice(-MAX_STORED_MESSAGES);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(messagesToStore));
+      } catch (error) {
+        console.error('Failed to save chat history:', error);
+      }
+    }
+  }, [messages]);
 
   // Removed noisy render logging - React 19 strict mode causes double renders in dev
 
@@ -218,7 +247,18 @@ export default function Chat() {
   };
 
   const handleQuickPrompt = (prompt: string) => {
-    sendMessage(prompt);
+    setInput(prompt);
+    // Focus the textarea after populating
+    setTimeout(() => {
+      textareaRef.current?.focus();
+    }, 0);
+  };
+
+  const handleClearChat = () => {
+    setMessages([]);
+    setInput("");
+    setError(null);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -327,6 +367,18 @@ export default function Chat() {
                 }
               }}
             />
+            {messages.length > 0 && (
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={handleClearChat}
+                className="h-[44px] w-[44px] flex-shrink-0"
+                title="Clear chat"
+              >
+                <Trash2 className="h-5 w-5 text-[#ff6b6b]" />
+              </Button>
+            )}
             <Button
               type="submit"
               size="icon"
