@@ -121,6 +121,11 @@ export default function Chat() {
     setIsLoading(true);
     setError(null);
 
+    // Keep focus on input after sending
+    setTimeout(() => {
+      textareaRef.current?.focus();
+    }, 0);
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
