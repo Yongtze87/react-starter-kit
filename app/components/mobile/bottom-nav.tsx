@@ -34,7 +34,10 @@ export function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm"
+      style={{ boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.05)' }}
+    >
       <div className="flex items-center justify-around h-16 max-w-screen-sm mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href;
