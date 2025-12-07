@@ -283,7 +283,7 @@ export default function Chat() {
                     )}
                     style={{boxShadow: '3px 3px 0 rgba(0, 0, 0, 1)'}}
                   >
-                    <div className="text-sm leading-relaxed prose prose-sm prose-p:my-1 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 max-w-none dark:prose-invert">
+                    <div className="text-xs leading-relaxed prose prose-sm prose-p:my-1 prose-li:my-0.5 prose-ul:my-2 prose-ol:my-2 max-w-none dark:prose-invert">
                       <Markdown>{message.content}</Markdown>
                     </div>
                   </div>

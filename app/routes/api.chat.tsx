@@ -40,7 +40,7 @@ Rules:
 
 Examples:
 User: "What's my 2024 revenue?"
-You: "2024 revenue: $458,320 (↑23% vs PY)"
+You: "2024 revenue: $458,320 (↑23% vs 2023)"
 
 User: "Show me revenue trends"
 You: "Revenue trends this year:
