@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ErrorBoundary as CustomErrorBoundary } from "./components/error-boundary";
 // Analytics removed - not needed for personal finance app, was blocking navigation
 
 // No loader needed - mock data in layout for instant navigation
@@ -63,7 +64,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App({ loaderData }: Route.ComponentProps) {
   // TODO: Add Supabase auth provider here
-  return <Outlet />;
+  return (
+    <CustomErrorBoundary>
+      <Outlet />
+    </CustomErrorBoundary>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

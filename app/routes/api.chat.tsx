@@ -1,6 +1,7 @@
 import { streamText } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import type { Route } from "./+types/api.chat";
+import { validateCSRFHeader } from "~/lib/security/csrf";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_AI_API_KEY || "",
@@ -8,15 +9,78 @@ const google = createGoogleGenerativeAI({
 
 export async function action({ request }: Route.ActionArgs) {
   try {
-    console.log('Chat API called');
-    console.log('API Key present:', !!process.env.GOOGLE_AI_API_KEY);
-    console.log('API Key length:', process.env.GOOGLE_AI_API_KEY?.length || 0);
+    // CSRF protection: Validate custom header
+    const csrfError = validateCSRFHeader(request);
+    if (csrfError) {
+      return csrfError;
+    }
 
     const { messages } = await request.json();
-    console.log('Received messages:', messages?.length);
+
+    // Input validation
+    if (!Array.isArray(messages)) {
+      return new Response(
+        JSON.stringify({ error: 'Messages must be an array' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'At least one message is required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (messages.length > 10) {
+      return new Response(
+        JSON.stringify({ error: 'Too many messages (max 10)' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate each message
+    const maxLength = parseInt(process.env.MAX_MESSAGE_LENGTH || '500');
+    for (const msg of messages) {
+      if (!msg.role || !msg.content) {
+        return new Response(
+          JSON.stringify({ error: 'Each message must have role and content' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (msg.role !== 'user' && msg.role !== 'assistant') {
+        return new Response(
+          JSON.stringify({ error: 'Invalid message role' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (typeof msg.content !== 'string') {
+        return new Response(
+          JSON.stringify({ error: 'Message content must be a string' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      if (msg.content.length > maxLength) {
+        return new Response(
+          JSON.stringify({ error: `Message too long (max ${maxLength} characters)` }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Prevent extremely long words (potential attack vector)
+      const words = msg.content.split(/\s+/);
+      if (words.some(word => word.length > 100)) {
+        return new Response(
+          JSON.stringify({ error: 'Message contains invalid content' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     if (!process.env.GOOGLE_AI_API_KEY) {
-      console.error('GOOGLE_AI_API_KEY is not set');
       return new Response(
         JSON.stringify({ error: 'API key not configured' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
@@ -59,8 +123,6 @@ Total: $82,345"
 Stay brief. Answer directly. No follow-up questions. No suggestions.`,
     });
 
-    console.log('Streaming response');
-
     // Create a streaming response
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
@@ -76,7 +138,6 @@ Stay brief. Answer directly. No follow-up questions. No suggestions.`,
               .replace(/\t/g, '\\t');
             const data = `0:"${escapedChunk}"\n`;
             controller.enqueue(encoder.encode(data));
-            console.log('Sent chunk:', chunk.substring(0, 50)); // Debug log
           }
           controller.close();
         } catch (error) {

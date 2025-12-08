@@ -205,32 +205,61 @@ export const updateUserProfile = async (
 
 /**
  * Normalize phone number to E.164 format
- * Example: (415) 555-1001 -> +14155551001
+ * Supports Singapore (+65) and US/Canada (+1) formats
+ * Examples:
+ *   9123 4567 -> +6591234567 (Singapore)
+ *   (415) 555-1001 -> +14155551001 (US/Canada)
  */
 export const normalizePhoneNumber = (phone: string): string => {
   // Remove all non-digit characters
   const digits = phone.replace(/\D/g, '');
 
-  // Add +1 country code if not present (assuming US/Canada)
-  if (digits.length === 10) {
-    return `+1${digits}`;
-  } else if (digits.length === 11 && digits.startsWith('1')) {
-    return `+${digits}`;
-  } else if (phone.startsWith('+')) {
+  // If already has + prefix, return as is
+  if (phone.startsWith('+')) {
     return phone;
   }
 
+  // Singapore: 8 digits -> +65XXXXXXXX
+  if (digits.length === 8) {
+    return `+65${digits}`;
+  }
+
+  // Singapore with country code: 65XXXXXXXX -> +65XXXXXXXX
+  if (digits.length === 10 && digits.startsWith('65')) {
+    return `+${digits}`;
+  }
+
+  // US/Canada: 10 digits -> +1XXXXXXXXXX
+  if (digits.length === 10) {
+    return `+1${digits}`;
+  }
+
+  // US/Canada with country code: 1XXXXXXXXXX -> +1XXXXXXXXXX
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return `+${digits}`;
+  }
+
+  // Default: assume it's already in correct format
   return `+${digits}`;
 };
 
 /**
  * Format phone number for display
- * Example: +14155551001 -> (415) 555-1001
+ * Examples:
+ *   +6591234567 -> +65 9123 4567 (Singapore)
+ *   +14155551001 -> (415) 555-1001 (US/Canada)
  */
 export const formatPhoneNumber = (phone: string): string => {
   const digits = phone.replace(/\D/g, '');
 
-  // Format US/Canada numbers
+  // Format Singapore numbers: +65 XXXX XXXX
+  if (digits.length === 10 && digits.startsWith('65')) {
+    const firstPart = digits.slice(2, 6);
+    const secondPart = digits.slice(6);
+    return `+65 ${firstPart} ${secondPart}`;
+  }
+
+  // Format US/Canada numbers: (XXX) XXX-XXXX
   if (digits.length === 11 && digits.startsWith('1')) {
     const areaCode = digits.slice(1, 4);
     const exchange = digits.slice(4, 7);
@@ -243,12 +272,22 @@ export const formatPhoneNumber = (phone: string): string => {
 
 /**
  * Validate phone number format
+ * Supports Singapore and US/Canada formats
  */
 export const isValidPhoneNumber = (phone: string): boolean => {
   const digits = phone.replace(/\D/g, '');
 
-  // Must be 10 digits (US/Canada without country code) or 11 digits (with country code)
-  return digits.length === 10 || (digits.length === 11 && digits.startsWith('1'));
+  // Singapore: 8 digits or 10 digits with country code (65XXXXXXXX)
+  if (digits.length === 8 || (digits.length === 10 && digits.startsWith('65'))) {
+    return true;
+  }
+
+  // US/Canada: 10 digits or 11 digits with country code (1XXXXXXXXXX)
+  if (digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))) {
+    return true;
+  }
+
+  return false;
 };
 
 /**

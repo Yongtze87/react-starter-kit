@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from 'react-router';
 import { getCurrentUserProfile, getCompanyById } from '~/lib/supabase';
 import { uploadDocument } from '~/lib/supabase/queries';
-import { createServerSupabaseClient } from '~/lib/supabase/client';
+import { createServerSupabaseClient } from '~/lib/supabase/server';
 import {
   validateFile,
   generateUniqueFileName,

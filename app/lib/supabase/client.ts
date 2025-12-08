@@ -9,7 +9,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables. Please check SUPABASE_URL and SUPABASE_ANON_KEY');
 }
 
-// Create a single supabase client for interacting with your database
+/**
+ * CLIENT-SIDE ONLY Supabase client
+ *
+ * This client uses the anonymous key and respects Row Level Security (RLS).
+ * Safe to use in client-side components.
+ *
+ * For server-side operations requiring admin access,
+ * use createServerSupabaseClient from './server.ts' instead.
+ */
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -18,21 +26,5 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     flowType: 'pkce',
   },
 });
-
-// Server-side Supabase client with service role (for admin operations)
-export const createServerSupabaseClient = () => {
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-  if (!supabaseServiceKey) {
-    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY for server operations');
-  }
-
-  return createClient<Database>(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-};
 
 export default supabase;

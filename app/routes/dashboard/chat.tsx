@@ -5,6 +5,8 @@ import { Textarea } from "~/components/ui/textarea";
 import { NeoCard } from "~/components/ui/neo-card";
 import { cn } from "~/lib/utils";
 import { Send, Sparkles, TrendingUp, FileText, Calculator, Trash2 } from "lucide-react";
+import { getCSRFHeaders } from "~/lib/security/csrf";
+import { AIConsentDialog } from "~/components/ai-consent-dialog";
 
 const quickPrompts = [
   {
@@ -31,6 +33,7 @@ interface Message {
 }
 
 const STORAGE_KEY = 'chat-history';
+const CONSENT_KEY = 'ai-consent-given';
 const MAX_STORED_MESSAGES = 10;
 
 export default function Chat() {
@@ -39,16 +42,24 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [hasConsent, setHasConsent] = useState<boolean | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingQueueRef = useRef<string[]>([]);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load conversation history from localStorage on mount
+  // Check for AI processing consent on mount
+  useEffect(() => {
+    const consent = sessionStorage.getItem(CONSENT_KEY);
+    setHasConsent(consent === 'true');
+  }, []);
+
+  // Load conversation history from sessionStorage on mount
+  // sessionStorage clears when browser tab closes, protecting sensitive financial data
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = sessionStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         setMessages(parsed);
@@ -58,13 +69,14 @@ export default function Chat() {
     }
   }, []);
 
-  // Save conversation history to localStorage (keep last 10 messages)
+  // Save conversation history to sessionStorage (keep last 10 messages)
+  // Data automatically cleared when tab closes for PDPA compliance
   useEffect(() => {
     if (messages.length > 0) {
       try {
         // Keep only the last MAX_STORED_MESSAGES
         const messagesToStore = messages.slice(-MAX_STORED_MESSAGES);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messagesToStore));
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messagesToStore));
       } catch (error) {
         console.error('Failed to save chat history:', error);
       }
@@ -159,6 +171,7 @@ export default function Chat() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
+          ...getCSRFHeaders(),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -258,13 +271,56 @@ export default function Chat() {
     setMessages([]);
     setInput("");
     setError(null);
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessage(input);
   };
+
+  const handleConsentAccept = () => {
+    sessionStorage.setItem(CONSENT_KEY, 'true');
+    setHasConsent(true);
+  };
+
+  const handleConsentDecline = () => {
+    sessionStorage.setItem(CONSENT_KEY, 'false');
+    setHasConsent(false);
+    // Optionally navigate away or show a message
+  };
+
+  // Show consent dialog on first visit
+  if (hasConsent === null) {
+    return (
+      <AIConsentDialog
+        onAccept={handleConsentAccept}
+        onDecline={handleConsentDecline}
+      />
+    );
+  }
+
+  // Show message if user declined consent
+  if (hasConsent === false) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] p-4">
+        <NeoCard className="max-w-md">
+          <div className="p-6 text-center">
+            <p className="text-sm font-bold mb-2">AI Assistant Unavailable</p>
+            <p className="text-xs font-semibold text-[#666] mb-4">
+              You declined consent for AI processing. The chat assistant cannot be used without consent.
+            </p>
+            <Button
+              onClick={() => setHasConsent(null)}
+              className="neo-btn bg-black text-white hover:bg-black/90 font-bold"
+            >
+              Review Consent
+            </Button>
+          </div>
+        </NeoCard>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-8rem)] -mx-4 -my-4">
