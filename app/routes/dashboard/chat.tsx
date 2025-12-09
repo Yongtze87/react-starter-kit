@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router";
 import Markdown from "react-markdown";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { NeoCard } from "~/components/ui/neo-card";
 import { cn } from "~/lib/utils";
-import { Send, Sparkles, TrendingUp, FileText, Calculator, Trash2 } from "lucide-react";
+import { Send, Sparkles, TrendingUp, FileText, Calculator, Trash2, Settings } from "lucide-react";
 import { getCSRFHeaders } from "~/lib/security/csrf";
-import { AIConsentDialog } from "~/components/ai-consent-dialog";
 
 const quickPrompts = [
   {
@@ -279,43 +279,30 @@ export default function Chat() {
     sendMessage(input);
   };
 
-  const handleConsentAccept = () => {
-    sessionStorage.setItem(CONSENT_KEY, 'true');
-    setHasConsent(true);
-  };
-
-  const handleConsentDecline = () => {
-    sessionStorage.setItem(CONSENT_KEY, 'false');
-    setHasConsent(false);
-    // Optionally navigate away or show a message
-  };
-
-  // Show consent dialog on first visit
-  if (hasConsent === null) {
-    return (
-      <AIConsentDialog
-        onAccept={handleConsentAccept}
-        onDecline={handleConsentDecline}
-      />
-    );
-  }
-
-  // Show message if user declined consent
-  if (hasConsent === false) {
+  // Show message if consent not given or not yet set
+  if (hasConsent !== true) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] p-4">
         <NeoCard className="max-w-md">
-          <div className="p-6 text-center">
-            <p className="text-sm font-bold mb-2">AI Assistant Unavailable</p>
-            <p className="text-xs font-semibold text-[#666] mb-4">
-              You declined consent for AI processing. The chat assistant cannot be used without consent.
+          <div className="p-6 text-center space-y-4">
+            <div className="bg-[#FFD54F] p-4 rounded-2xl mx-auto w-fit border-[3px] border-black" style={{boxShadow: '4px 4px 0 rgba(0, 0, 0, 1)'}}>
+              <Settings className="w-8 h-8 text-black" />
+            </div>
+            <div>
+              <p className="text-sm font-bold mb-2">AI Assistant Setup Required</p>
+              <p className="text-xs font-semibold text-[#666] mb-4">
+                Please enable AI processing consent in Settings before using the chat assistant.
+              </p>
+            </div>
+            <Link to="/settings">
+              <Button className="neo-btn bg-[#00d4a1] text-black hover:bg-[#00d4a1]/90 font-bold">
+                <Settings className="w-4 h-4 mr-2" />
+                Go to Settings
+              </Button>
+            </Link>
+            <p className="text-[10px] font-semibold text-[#666] mt-2">
+              You can enable or disable AI consent anytime in Settings → AI Assistant Privacy
             </p>
-            <Button
-              onClick={() => setHasConsent(null)}
-              className="neo-btn bg-black text-white hover:bg-black/90 font-bold"
-            >
-              Review Consent
-            </Button>
           </div>
         </NeoCard>
       </div>
