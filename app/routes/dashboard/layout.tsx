@@ -17,6 +17,9 @@ const pageTitles: Record<string, string> = {
   "/chat": "AI Assistant",
   "/documents": "Documents",
   "/settings": "Settings",
+  "/admin/documents": "Document Management",
+  "/admin/queries": "Client Queries",
+  "/admin/clients": "Client Management",
 };
 
 export default function DashboardLayout() {

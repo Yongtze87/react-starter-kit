@@ -3,8 +3,9 @@ import { NeoCard, NeoCardContent, NeoCardDescription, NeoCardHeader, NeoCardTitl
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Bell, Lock, User, Building2, Database, Moon, Globe, Edit2, Check, X, Shield, Key, FileText, HelpCircle } from "lucide-react";
+import { Bell, Lock, User, Building2, Database, Moon, Globe, Edit2, Check, X, Shield, Key, FileText, HelpCircle, Glasses } from "lucide-react";
 import SubscriptionStatus from "~/components/subscription-status";
+import { getViewMode, setViewMode as setViewModeUtil, type ViewMode } from "~/lib/utils/view-mode";
 
 // B2B Accounting Firm Model - Mock Data
 const mockUserProfile = {
@@ -72,6 +73,7 @@ export default function Page() {
     }
     return false;
   });
+  const [viewMode, setViewMode] = useState<ViewMode>(() => getViewMode());
 
   const handleEdit = (sectionTitle: string) => {
     setEditingSection(sectionTitle);
@@ -114,6 +116,14 @@ export default function Page() {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem(CONSENT_KEY, newValue.toString());
     }
+  };
+
+  const handleViewModeToggle = () => {
+    const newMode: ViewMode = viewMode === 'client' ? 'admin' : 'client';
+    setViewMode(newMode);
+    setViewModeUtil(newMode);
+    // Optionally redirect to appropriate dashboard when switching views
+    // window.location.href = newMode === 'admin' ? '/admin/documents' : '/';
   };
 
   const handleContactSupport = () => {
@@ -502,6 +512,42 @@ export default function Page() {
           >
             📧 Email Your Accounting Firm
           </Button>
+        </NeoCardContent>
+      </NeoCard>
+
+      {/* Testing - View Mode Toggle (REMOVE AFTER TESTING) */}
+      <NeoCard className="bg-[#fff9e6] border-[#ffc107]">
+        <NeoCardHeader className="p-3 pb-2">
+          <div className="flex items-center gap-2">
+            <Glasses className="h-4 w-4 text-[#ff9800]" />
+            <NeoCardTitle className="text-sm font-bold text-[#ff9800]">Testing Mode</NeoCardTitle>
+          </div>
+          <NeoCardDescription className="text-xs font-semibold text-[#ff9800] mt-1">
+            ⚠️ For development only - Remove before production
+          </NeoCardDescription>
+        </NeoCardHeader>
+        <NeoCardContent className="p-3 pt-0">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center py-1.5">
+              <Label className="text-xs font-semibold text-[#666]">Current View</Label>
+              <span className="text-xs font-bold uppercase">{viewMode}</span>
+            </div>
+            <Button
+              onClick={handleViewModeToggle}
+              className={`w-full h-8 text-xs neo-btn font-bold ${
+                viewMode === 'admin'
+                  ? 'bg-[#ff9800] hover:bg-[#ff9800]/90 text-white'
+                  : 'bg-[#00d4a1] hover:bg-[#00d4a1]/90 text-black'
+              }`}
+            >
+              Switch to {viewMode === 'client' ? 'Admin' : 'Client'} View
+            </Button>
+            <p className="text-[10px] font-semibold text-[#666] text-center mt-2">
+              {viewMode === 'client'
+                ? 'Switch to admin view to manage documents, queries, and clients'
+                : 'Switch to client view to see the customer experience'}
+            </p>
+          </div>
         </NeoCardContent>
       </NeoCard>
 

@@ -3,11 +3,16 @@ import {
   LayoutDashboard,
   MessageSquare,
   FileText,
-  Settings
+  Settings,
+  Users,
+  Inbox,
+  Bell
 } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { useState, useEffect } from "react";
+import { getViewMode } from "~/lib/utils/view-mode";
 
-const navItems = [
+const clientNavItems = [
   {
     label: "Dashboard",
     href: "/",
@@ -30,8 +35,44 @@ const navItems = [
   },
 ];
 
+const adminNavItems = [
+  {
+    label: "Documents",
+    href: "/admin/documents",
+    icon: FileText,
+  },
+  {
+    label: "Queries",
+    href: "/admin/queries",
+    icon: Inbox,
+  },
+  {
+    label: "Clients",
+    href: "/admin/clients",
+    icon: Users,
+  },
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
+];
+
 export function BottomNav() {
   const location = useLocation();
+  const [viewMode, setViewMode] = useState(getViewMode());
+
+  // Listen for view mode changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setViewMode(getViewMode());
+    };
+
+    // Check every time location changes (e.g., when settings updated)
+    handleStorageChange();
+  }, [location]);
+
+  const navItems = viewMode === 'admin' ? adminNavItems : clientNavItems;
 
   return (
     <nav
