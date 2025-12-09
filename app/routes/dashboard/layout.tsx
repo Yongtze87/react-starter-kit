@@ -13,13 +13,13 @@ const user = {
 };
 
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/chat": "AI Assistant",
-  "/documents": "Documents",
-  "/settings": "Settings",
-  "/admin/documents": "Document Management",
-  "/admin/queries": "Client Queries",
-  "/admin/clients": "Client Management",
+  "/dashboard": "Dashboard",
+  "/dashboard/chat": "AI Assistant",
+  "/dashboard/documents": "Documents",
+  "/dashboard/settings": "Settings",
+  "/dashboard/admin/documents": "Document Management",
+  "/dashboard/admin/queries": "Client Queries",
+  "/dashboard/admin/clients": "Client Management",
 };
 
 export default function DashboardLayout() {

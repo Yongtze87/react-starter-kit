@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { NeoCard, NeoCardContent, NeoCardDescription, NeoCardHeader, NeoCardTitle } from "~/components/ui/neo-card";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
@@ -64,6 +65,7 @@ const mockUserProfile = {
 const CONSENT_KEY = 'ai-consent-given';
 
 export default function Page() {
+  const navigate = useNavigate();
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<Record<string, Record<string, string>>>({});
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -122,8 +124,12 @@ export default function Page() {
     const newMode: ViewMode = viewMode === 'client' ? 'admin' : 'client';
     setViewMode(newMode);
     setViewModeUtil(newMode);
-    // Optionally redirect to appropriate dashboard when switching views
-    // window.location.href = newMode === 'admin' ? '/admin/documents' : '/';
+    // Navigate to appropriate dashboard to trigger navigation refresh
+    if (newMode === 'admin') {
+      navigate('/dashboard/admin/documents');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   const handleContactSupport = () => {

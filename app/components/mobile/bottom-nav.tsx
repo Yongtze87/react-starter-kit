@@ -15,22 +15,22 @@ import { getViewMode } from "~/lib/utils/view-mode";
 const clientNavItems = [
   {
     label: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     label: "Chat",
-    href: "/chat",
+    href: "/dashboard/chat",
     icon: MessageSquare,
   },
   {
     label: "Documents",
-    href: "/documents",
+    href: "/dashboard/documents",
     icon: FileText,
   },
   {
     label: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];
@@ -38,22 +38,22 @@ const clientNavItems = [
 const adminNavItems = [
   {
     label: "Documents",
-    href: "/admin/documents",
+    href: "/dashboard/admin/documents",
     icon: FileText,
   },
   {
     label: "Queries",
-    href: "/admin/queries",
+    href: "/dashboard/admin/queries",
     icon: Inbox,
   },
   {
     label: "Clients",
-    href: "/admin/clients",
+    href: "/dashboard/admin/clients",
     icon: Users,
   },
   {
     label: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];
