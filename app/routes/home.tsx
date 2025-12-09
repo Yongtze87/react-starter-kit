@@ -50,12 +50,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader(args: Route.LoaderArgs) {
-  // TODO: Add Supabase auth check and pricing data
-  return {
-    isSignedIn: false,
-    hasActiveSubscription: false,
-    plans: [],
-  };
+  // For testing: redirect to dashboard
+  // TODO: Later, add auth check - if signed in redirect to dashboard, else show landing page
+  return Response.redirect('/dashboard');
+
+  // Uncomment below to show landing page
+  // return {
+  //   isSignedIn: false,
+  //   hasActiveSubscription: false,
+  //   plans: [],
+  // };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
