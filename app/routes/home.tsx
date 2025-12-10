@@ -1,3 +1,4 @@
+import { redirect } from "react-router";
 import ContentSection from "~/components/homepage/content";
 import Footer from "~/components/homepage/footer";
 import Integrations from "~/components/homepage/integrations";
@@ -52,7 +53,7 @@ export function meta({}: Route.MetaArgs) {
 export async function loader(args: Route.LoaderArgs) {
   // For testing: redirect to dashboard
   // TODO: Later, add auth check - if signed in redirect to dashboard, else show landing page
-  return Response.redirect('/dashboard');
+  return redirect('/dashboard');
 
   // Uncomment below to show landing page
   // return {
