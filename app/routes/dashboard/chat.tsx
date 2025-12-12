@@ -294,7 +294,7 @@ export default function Chat() {
                 Please enable AI processing consent in Settings before using the chat assistant.
               </p>
             </div>
-            <Link to="/settings">
+            <Link to="/dashboard/settings">
               <Button className="neo-btn bg-[#00d4a1] text-black hover:bg-[#00d4a1]/90 font-bold">
                 <Settings className="w-4 h-4 mr-2" />
                 Go to Settings
