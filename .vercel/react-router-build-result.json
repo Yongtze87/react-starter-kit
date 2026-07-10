@@ -18,7 +18,11 @@
       "routes/subscription-required": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
       "routes/dashboard/chat": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
-      "routes/dashboard/settings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+      "routes/dashboard/settings": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/trader/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/trader/scanner": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/trader/watchlist": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/dashboard/trader/ticker": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
     },
     "routes": {
       "root": {
@@ -113,13 +117,55 @@
         "config": {
           "runtime": "nodejs"
         }
+      },
+      "routes/dashboard/trader/layout": {
+        "id": "routes/dashboard/trader/layout",
+        "parentId": "routes/dashboard/layout",
+        "file": "app/routes/dashboard/trader/layout.tsx",
+        "config": {}
+      },
+      "routes/dashboard/trader/index": {
+        "id": "routes/dashboard/trader/index",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "app/routes/dashboard/trader/index.tsx",
+        "path": "dashboard/trader",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/trader/scanner": {
+        "id": "routes/dashboard/trader/scanner",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "app/routes/dashboard/trader/scanner.tsx",
+        "path": "dashboard/trader/scanner",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/trader/watchlist": {
+        "id": "routes/dashboard/trader/watchlist",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "app/routes/dashboard/trader/watchlist.tsx",
+        "path": "dashboard/trader/watchlist",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/dashboard/trader/ticker": {
+        "id": "routes/dashboard/trader/ticker",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "app/routes/dashboard/trader/ticker.tsx",
+        "path": "dashboard/trader/:ticker",
+        "config": {
+          "runtime": "nodejs"
+        }
       }
     }
   },
   "reactRouterConfig": {
-    "appDirectory": "/Users/michaelshimeles/Desktop/rsk/app",
+    "appDirectory": "/home/user/react-starter-kit/app",
     "basename": "/",
-    "buildDirectory": "/Users/michaelshimeles/Desktop/rsk/build",
+    "buildDirectory": "/home/user/react-starter-kit/build",
     "future": {
       "unstable_middleware": false,
       "unstable_optimizeDeps": false,
@@ -191,6 +237,35 @@
         "parentId": "routes/dashboard/layout",
         "file": "routes/dashboard/settings.tsx",
         "path": "dashboard/settings"
+      },
+      "routes/dashboard/trader/layout": {
+        "id": "routes/dashboard/trader/layout",
+        "parentId": "routes/dashboard/layout",
+        "file": "routes/dashboard/trader/layout.tsx"
+      },
+      "routes/dashboard/trader/index": {
+        "id": "routes/dashboard/trader/index",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "routes/dashboard/trader/index.tsx",
+        "path": "dashboard/trader"
+      },
+      "routes/dashboard/trader/scanner": {
+        "id": "routes/dashboard/trader/scanner",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "routes/dashboard/trader/scanner.tsx",
+        "path": "dashboard/trader/scanner"
+      },
+      "routes/dashboard/trader/watchlist": {
+        "id": "routes/dashboard/trader/watchlist",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "routes/dashboard/trader/watchlist.tsx",
+        "path": "dashboard/trader/watchlist"
+      },
+      "routes/dashboard/trader/ticker": {
+        "id": "routes/dashboard/trader/ticker",
+        "parentId": "routes/dashboard/trader/layout",
+        "file": "routes/dashboard/trader/ticker.tsx",
+        "path": "dashboard/trader/:ticker"
       }
     },
     "routeDiscovery": {
