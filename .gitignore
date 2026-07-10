@@ -6,3 +6,7 @@
 /build/
 
 .env.local
+
+# Deploy artifacts
+.vercel/
+.netlify/

@@ -38,7 +38,7 @@ export function SpreadGrid({ ticker, stockPrice, expirations }: Props) {
       const longMid = longPut.mid;
       if (shortMid <= longMid) return null;
       const result = calcBullPutSpread(shortMid, longMid, shortPut.strike, longPut.strike, dte);
-      if (result.capitalRequired <= 0 || result.annReturn <= 0) return null;
+      if (result.capitalRequired <= 0 || result.annualizedReturn <= 0) return null;
       const otmPct = (stockPrice - shortPut.strike) / stockPrice * 100;
       const risk: "Conservative" | "Moderate" | "Aggressive" =
         otmPct >= 10 ? "Conservative" : otmPct >= 5 ? "Moderate" : "Aggressive";
@@ -46,13 +46,14 @@ export function SpreadGrid({ ticker, stockPrice, expirations }: Props) {
         shortStrike: shortPut.strike,
         longStrike: longPut.strike,
         ...result,
+        dailyCashFlow: result.netPremiumDollars / dte,
         risk,
         shortMid,
         longMid,
       };
     })
     .filter((s): s is NonNullable<typeof s> => s !== null)
-    .sort((a, b) => b.annReturn - a.annReturn)
+    .sort((a, b) => b.annualizedReturn - a.annualizedReturn)
     .slice(0, 10);
 
   return (
@@ -119,7 +120,7 @@ export function SpreadGrid({ ticker, stockPrice, expirations }: Props) {
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-400 uppercase tracking-wide">Ann. Return</p>
-                  <p className="font-semibold tabular-nums">{s.annReturn.toFixed(1)}%</p>
+                  <p className="font-semibold tabular-nums">{s.annualizedReturn.toFixed(1)}%</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-gray-400 uppercase tracking-wide">Capital req.</p>

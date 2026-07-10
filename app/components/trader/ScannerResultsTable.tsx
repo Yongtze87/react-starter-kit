@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { RiskBadge } from "./RiskBadge";
-import type { ScanResult } from "~/routes/dashboard/trader/scanner";
+import type { ScanResult } from "~/lib/marketData";
 
 interface Props {
   results: ScanResult[];

@@ -9,8 +9,14 @@
  */
 
 import type * as http from "../http.js";
+import type * as lib_mockMarketData from "../lib/mockMarketData.js";
+import type * as lib_optionsCalculations from "../lib/optionsCalculations.js";
+import type * as options from "../options.js";
+import type * as scanner from "../scanner.js";
+import type * as stockSettings from "../stockSettings.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as users from "../users.js";
+import type * as watchlist from "../watchlist.js";
 
 import type {
   ApiFromModules,
@@ -28,8 +34,14 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  "lib/mockMarketData": typeof lib_mockMarketData;
+  "lib/optionsCalculations": typeof lib_optionsCalculations;
+  options: typeof options;
+  scanner: typeof scanner;
+  stockSettings: typeof stockSettings;
   subscriptions: typeof subscriptions;
   users: typeof users;
+  watchlist: typeof watchlist;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
